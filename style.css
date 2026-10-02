@@ -3213,3 +3213,60 @@ body:has(#recordsScreen.active) #touchControls,
 body:has(#recordsScreen.active) #touchPauseButton {
   display: none !important;
 }
+
+
+/* ===== rev198-mobilefit1: iPhone / mobile visible-viewport fitting =====
+   Keep the game's 1120x720 logical layout intact, but scale that layout to the
+   actual visible viewport. Touch controls remain outside this scaler so they
+   stay large enough to operate. */
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+}
+
+#gameScreen {
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden !important;
+}
+
+#gameViewportScaler {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1120px;
+  height: 720px;
+  transform-origin: 50% 50%;
+  transform: translate(-50%, -50%) scale(var(--game-fit-scale, 1));
+  will-change: transform;
+  pointer-events: auto;
+}
+
+#gameViewportScaler > #gameViewport {
+  position: relative;
+  left: 0;
+  top: 0;
+  margin: 0 !important;
+}
+
+/* Prevent the browser's dynamic toolbars / safe areas from hiding controls. */
+body.smartphoneOnly #touchControls {
+  width: 100vw;
+  height: 100dvh;
+}
+
+@media (orientation: landscape) and (pointer: coarse) {
+  body.smartphoneOnly #touchStick {
+    left: max(12px, env(safe-area-inset-left));
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  body.smartphoneOnly #touchActionCluster {
+    right: max(12px, env(safe-area-inset-right)) !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+  #touchPauseButton {
+    top: max(8px, env(safe-area-inset-top));
+  }
+}

@@ -4041,8 +4041,13 @@ function updateAimGuide() {
   const origin = getThrowOrigin();
   const stageRect = cameraStage.getBoundingClientRect();
   const viewportRect = gameViewport.getBoundingClientRect();
-  const stageOffsetX = stageRect.left - viewportRect.left;
-  const stageOffsetY = stageRect.top - viewportRect.top;
+  // getBoundingClientRect() reflects the iPhone fit scale. aimGuide itself is
+  // positioned in the game's unscaled 1120x720 coordinate system, so convert
+  // the measured offsets back into logical game pixels.
+  const viewportScaleX = gameViewport.offsetWidth > 0 ? viewportRect.width / gameViewport.offsetWidth : 1;
+  const viewportScaleY = gameViewport.offsetHeight > 0 ? viewportRect.height / gameViewport.offsetHeight : 1;
+  const stageOffsetX = (stageRect.left - viewportRect.left) / Math.max(0.0001, viewportScaleX);
+  const stageOffsetY = (stageRect.top - viewportRect.top) / Math.max(0.0001, viewportScaleY);
   const sx = stageOffsetX + origin.x - cameraX;
   const sy = stageOffsetY + origin.y - cameraY;
   const angle = Math.atan2(aimState.dirY, aimState.dirX);

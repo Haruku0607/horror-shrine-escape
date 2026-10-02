@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "rev198-pwa1";
+  const VERSION = "rev198-mobilefit1";
   const SW_URL = `service-worker.js?v=${VERSION}`;
   let registration = null;
   let overlay = null;

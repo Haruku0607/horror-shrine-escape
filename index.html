@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="夜道の追跡者 神域">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/images/props/torii.png">
-  <link rel="stylesheet" href="style.css?rev=194">
+  <link rel="stylesheet" href="style.css?rev=198-mobilefit1">
 </head>
 <body class="touchMode smartphoneOnly">
   <div id="app">
@@ -166,6 +166,7 @@
     </section>
 
     <section id="gameScreen" class="screen">
+      <div id="gameViewportScaler" aria-hidden="false">
       <div id="gameViewport">
         <div id="cameraStage">
           <canvas id="worldCanvas" width="800" height="500"></canvas>
@@ -241,6 +242,7 @@
           </div>
         </div>
       </div>
+      </div>
     </section>
 
     <section id="movieScreen" class="screen">
@@ -267,8 +269,9 @@
     </section>
   </div>
 
-  <script src="game.js?rev=198-mobile"></script>
+  <script src="mobile-fit.js?rev=198-mobilefit1"></script>
+  <script src="game.js?rev=198-mobilefit1"></script>
   <script src="counterattack.js?rev=198-mobile"></script>
-  <script src="pwa.js?rev=198-pwa1"></script>
+  <script src="pwa.js?rev=198-mobilefit1"></script>
 </body>
 </html>
