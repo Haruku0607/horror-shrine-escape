@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>夜道の追跡者 神域</title>
+  <meta name="theme-color" content="#050505">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="夜道の追跡者 神域">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/images/props/torii.png">
+  <link rel="stylesheet" href="style.css?rev=194">
+</head>
+<body class="touchMode smartphoneOnly">
+  <div id="app">
+    <section id="warningScreen" class="screen active warningScreen">
+      <div class="warningBackdrop"></div>
+      <div class="warningPanel">
+        <p class="warningKicker">警告</p>
+        <h1>WARNING</h1>
+        <p>
+          このゲームには暗い画面、突然の音、追跡・捕獲演出、点滅に近い表現が含まれます。<br>
+          体調が悪い場合、強い光や音が苦手な場合は、プレイを中止してください。
+        </p>
+        <p class="warningClick">タップして進む</p>
+      </div>
+    </section>
+
+    <section id="titleScreen" class="screen">
+      <div class="titleBackdrop"></div>
+      <div class="titlePanel">
+        <p class="titleSub">逃げろ。集めろ。納めろ。</p>
+        <h1>夜道の追跡者 神域</h1>
+        <div class="buttonRow titleButtonsWrap">
+          <button id="startButton" class="menuButton" type="button" onclick="window.__forceStartFromTitle && window.__forceStartFromTitle()">はじめる</button>
+          <button id="howToButton" class="menuButton" type="button" onclick="window.__forceShowHowTo && window.__forceShowHowTo()">あそびかた</button>
+          <button id="kaiiButton" class="menuButton" type="button" onclick="window.__forceShowGallery && window.__forceShowGallery()">怪異</button>
+          <button id="titleRecordButton" class="menuButton" type="button" onclick="window.__forceShowRecords && window.__forceShowRecords()">きろく</button>
+          <button id="settingsButton" class="menuButton" type="button" onclick="window.__forceShowSettings && window.__forceShowSettings()">せってい</button>
+          <button id="passphraseButton" class="menuButton" type="button">あいことば</button>
+        </div>
+        <div id="passphrasePanel" class="passphrasePanel" hidden>
+          <label for="passphraseInput">あいことば</label>
+          <input id="passphraseInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="あいことばを入力">
+          <div class="passphraseActions">
+            <button id="passphraseSubmitButton" class="menuButton" type="button">決定</button>
+            <button id="passphraseCloseButton" class="menuButton" type="button">閉じる</button>
+          </div>
+          <p id="passphraseStatus" class="passphraseStatus"></p>
+        </div>
+        <p class="audioNotice">左スティックで移動　走るボタンで走行切替　画面上の対象をタップして調べる　どうぐボタンで使用</p>
+      </div>
+    </section>
+
+    <section id="galleryScreen" class="screen">
+      <div class="settingsPanel widePanel">
+        <h2>怪異</h2>
+        <p class="screenNote">クリアした怪異の個体名とビジュアルを確認できる。</p>
+        <div id="galleryList" class="galleryList"></div>
+        <button id="galleryBackButton" class="menuButton">もどる</button>
+      </div>
+    </section>
+
+    <section id="howToScreen" class="screen">
+      <div class="howToPanel">
+        <h2>あそびかた</h2>
+
+        <div class="howToContent">
+          <h3>目的</h3>
+          <p>５つの神具を集めて中央の神社に奉納せよ。さすればあなたは恐怖から解き放たれるだろう…</p>
+
+          <div class="howToVisualGrid">
+            <div class="howToCard">
+              <img src="assets/images/player_single.png" alt="あなた">
+              <strong>あなた</strong>
+              <span>怪異から逃げながら、神具を探す。</span>
+            </div>
+            <div class="howToCard">
+              <img src="assets/images/props/sealed_key_box.png" alt="神具箱">
+              <strong>神具箱</strong>
+              <span>神具が入っている箱。開けると怪異に居場所がばれる。</span>
+            </div>
+            <div class="howToCard">
+              <img src="assets/images/props/locker.png" alt="どうぐ箱">
+              <strong>どうぐ箱</strong>
+              <span>探索を助けるどうぐが手に入ることがある。</span>
+            </div>
+            <div class="howToCard">
+              <img src="assets/images/props/torii.png" alt="鳥居">
+              <strong>神社・社</strong>
+              <span>鳥居から入る。社は怪異を遠くへ飛ばす力を持つ。</span>
+            </div>
+          </div>
+
+          <h3>操作方法</h3>
+          <p>移動：画面左下のスティック</p>
+          <p>走る：画面右下の走るボタンでON / OFF。たいりょくが0になると、満タンまで走れない。</p>
+          <p>調べる・奉納・社の力：近くまで移動して対象をタップ</p>
+          <p>どうぐ選択：画面上部のどうぐ欄をタップ</p>
+          <p>どうぐ使用：画面右下のどうぐボタン</p>
+          <p>選択中のどうぐを捨てる：どうぐ欄を素早く2回タップ</p>
+          <p>小石・爆竹：どうぐボタンを押しながらスティックで方向を決め、指を離して投げる</p>
+          <p>小さな仏像：どうぐボタン長押しで神社へ転移</p>
+          <p>反撃モードの銃系道具：どうぐボタンを1回タップで構え、構え中にもう1回タップで発射。構え中にどうぐボタンをスワイプすると構え解除。</p>
+          <p>ポーズ：画面左上のポーズボタン</p>
+
+          <h3>クリア方法</h3>
+          <p>５つの神具を集めて中央の神社に奉納せよ。さすればあなたは恐怖から解き放たれるだろう…</p>
+
+          <h3>注意</h3>
+          <p>神具の所持・奉納が重複なく計４つ以上になると、怪異は「最終形態」になる。</p>
+          <p>怪異に近づかれるほど画面が赤くなり、強く振動する。</p>
+          <p>神具箱を開ける、祭鈴を使うなどの行動で、怪異に居場所がばれる。</p>
+        </div>
+
+        <button id="howToBackButton" class="menuButton">もどる</button>
+      </div>
+    </section>
+
+    <section id="settingsScreen" class="screen">
+      <div class="settingsPanel">
+        <h2>せってい</h2>
+        <div class="settingRow">
+          <label for="masterVolume">全体音量</label>
+          <input id="masterVolume" type="range" min="0" max="100" value="70">
+          <span id="masterVolumeText">70</span>
+        </div>
+        <div class="settingRow">
+          <label for="bgmVolume">BGM音量</label>
+          <input id="bgmVolume" type="range" min="0" max="100" value="70">
+          <span id="bgmVolumeText">70</span>
+        </div>
+        <div class="settingRow">
+          <label for="seVolume">SE音量</label>
+          <input id="seVolume" type="range" min="0" max="100" value="85">
+          <span id="seVolumeText">85</span>
+        </div>
+        <div class="settingsActionButtons">
+          <button id="resetDataButton" class="menuButton dangerButton">データ初期化</button>
+        </div>
+        <button id="backButton" class="menuButton">もどる</button>
+      </div>
+    </section>
+
+    <section id="recordsScreen" class="screen">
+      <div class="settingsPanel widePanel recordsPanel">
+        <h2>きろく</h2>
+        <p class="screenNote">クリア記録を条件ごとに確認できる。記録を押すと詳細が表示される。</p>
+        <div class="recordControls">
+          <label for="recordSortSelect">表示順</label>
+          <select id="recordSortSelect">
+            <option value="time">クリアタイム順</option>
+            <option value="date">クリア日時</option>
+          </select>
+        </div>
+        <div class="recordsLayout">
+          <div id="recordsList" class="recordsList"></div>
+          <div id="recordDetail" class="recordDetail">
+            <p class="recordPlaceholder">記録を選択してください。</p>
+          </div>
+        </div>
+        <button id="recordsBackButton" class="menuButton">もどる</button>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <div id="gameViewport">
+        <div id="cameraStage">
+          <canvas id="worldCanvas" width="800" height="500"></canvas>
+
+          <div id="playerWrap"><div id="playerSprite" class="sprite"></div></div>
+          <div id="enemyWrap"><div id="enemySprite" class="sprite"></div></div>
+
+          <div id="darknessLayer"></div>
+          <div id="dangerLayer"></div>
+          <div id="clearGlow"></div>
+          <div id="noiseLayer"></div>
+                  </div>
+
+        <canvas id="minimap" width="170" height="170"></canvas>
+
+        <div id="inventoryPanel">
+          <div class="invGroup">
+            <div class="groupLabel">ITEM</div>
+            <div id="itemSlots" class="slotRow">
+              <div class="slot itemSlot" data-slot="0" data-slot-num="1"></div>
+              <div class="slot itemSlot" data-slot="1" data-slot-num="2"></div>
+              <div class="slot itemSlot" data-slot="2" data-slot-num="3"></div>
+            </div>
+          </div>
+
+          <div class="invGroup keyGroup">
+            <div class="groupLabel">KEY</div>
+            <div id="keySlots" class="slotRow">
+              <div class="slot keySlot" data-key="old_talisman"></div>
+              <div class="slot keySlot" data-key="damaged_beads"></div>
+              <div class="slot keySlot" data-key="frayed_bell_rope"></div>
+              <div class="slot keySlot" data-key="worn_kokeshi"></div>
+              <div class="slot keySlot" data-key="cracked_mirror"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="messageBox"></div>
+        <div id="promptBox"></div>
+        <div id="selectedItemName"></div>
+        <div id="buddhaGauge"><div id="buddhaGaugeFill"></div><span id="buddhaGaugeText">転移準備</span></div>
+        <div id="staminaGauge"><div id="staminaGaugeFill"></div></div>
+        <div id="ugomeEscapeGauge"><div id="ugomeEscapeGaugeFill"></div><span>触手を振りほどけ</span></div>
+        <div id="aimGuide"></div>
+        <div id="spiderWebOverlay"></div>
+        <div id="snatchOverlay"></div>
+        <div id="clearCelebrationOverlay"></div>
+        <div id="whiteFadeOverlay"></div>
+
+        <div id="pauseOverlay">
+          <div class="pausePanel">
+            <h2>ポーズメニュー</h2>
+
+            <div class="pauseColumns">
+              <div>
+                <h3>どうぐ</h3>
+                <div id="pauseItems" class="pauseInventory"></div>
+              </div>
+              <div>
+                <h3>神具</h3>
+                <div id="pauseKeys" class="pauseInventory"></div>
+              </div>
+            </div>
+
+            <div class="pauseButtons">
+              <button id="pauseResumeButton" class="menuButton">ゲームに戻る</button>
+              <button id="pauseSettingsButton" class="menuButton">せってい</button>
+              <button id="pauseTitleButton" class="menuButton">たいとる</button>
+              <button id="pauseRestartButton" class="menuButton">さいしょから</button>
+            </div>
+
+            <p class="pauseHelp">「ゲームに戻る」で再開</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="movieScreen" class="screen">
+      <div id="movieStage">
+        <div class="movieRoad"></div>
+        <div class="movieNoise"></div>
+        <div class="movieEnemy"></div>
+        <div class="movieFlash"></div>
+        <div class="movieBlackout"></div>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="screen">
+      <div class="resultPanel">
+        <h2 id="resultTitle">RESULT</h2>
+        <p id="resultTime">生存時間：0.0秒</p>
+        <p id="resultObjective">奉納：0/5</p>
+        <p id="resultRank">評価：---</p>
+        <div class="buttonRow">
+          <button id="retryButton" class="menuButton">もう一度</button>
+          <button id="titleButton" class="menuButton">タイトルへ</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="game.js?rev=198-mobile"></script>
+  <script src="counterattack.js?rev=198-mobile"></script>
+  <script src="pwa.js?rev=198-pwa1"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+{
+  "version": 194,
+  "assets": [
+    {
+      "asset": "seal_gun_icon.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: stylized-concept. Asset type: a production-ready transparent PNG inventory icon for a Japanese supernatural night-survival game, item 魔封銃 (spirit-sealing handgun). Generate ONE original object only, no sheet, no labels. A compact six-shot revolver-like ritual handgun, dark weathered steel, aged brass engraved fittings, a dark burgundy cord wrapped around the grip, a small purple sealing stone inset above the grip and a narrow old ivory ofuda strip fastened to the barrel with abstract ink seal marks, not readable writing. Mature semi-realistic hand-painted game-item illustration, fine worn metal texture, restrained warm highlights, somber Japanese horror atmosphere. Clear recognizable silhouette legible at 56px. Full object centered in a square canvas, angled gently from lower left grip to upper right muzzle in three-quarter view, 12 percent clear margins. No human, hand, ammunition, duplicate item, border, panel, logo or text. Genuinely transparent RGBA background including ALL internal openings in the trigger guard and between parts. No white backdrop, no black backdrop, no baked checkerboard, no floor, no cast shadow outside the object, no white fringe. Output the isolated asset with real transparency.",
+      "reference": null
+    },
+    {
+      "asset": "seal_gun_field.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent RGBA game field sprite. Image 1 is the edit/design target, not a backdrop. Create the FIELD SPRITE variant of this exact 魔封銃. Change only the camera and pose: clean near-orthographic side view, barrel perfectly horizontal pointing RIGHT, grip below at the left. Preserve the recognisable six-shot revolver body, dark iron, engraved aged brass, burgundy wrapping, purple inset and ivory seal of the reference. Full gun in frame, no hand. No perspective foreshortening. The muzzle's forward axis is horizontal so a game can rotate the sprite around the grip. Same mature semi-realistic painted Japanese horror item style. Square canvas with full object centered and clear margins; keep all parts unclipped. Output exactly ONE isolated sprite. Genuine alpha transparency both outside the object and in interior holes such as trigger guards and pin rings. Do not draw a black or white backdrop, checkerboard, title, border, labels, any shadow outside the object or watermark. Keep colors/materials and ornament identity from the reference; do not redesign.",
+      "reference": "seal_gun_icon.png"
+    },
+    {
+      "asset": "seal_grenade_icon.png",
+      "mode": "built-in image_gen",
+      "prompt": "Primary request: 魔封手榴弾, a compact oval ritual fragmentation grenade. Distinct dark iron segmented egg-shaped body bound by one ivory paper sealing band, an aged brass top assembly with a safety ring and lever, a short burgundy cord knot and a restrained purple inset bead. It must read as a throwable grenade, not a bottle or bomb with a fuse. Use case: stylized-concept. Asset type: a production-ready transparent PNG inventory icon for a Japanese supernatural night-survival game. Mature semi-realistic hand-painted game item, realistically weathered dark steel, aged engraved brass details, burgundy braided ritual cord and old ivory ofuda with abstract ink marks (not readable writing). Consistent somber Japanese horror art direction, controlled warm highlights, detailed tactile materials, strong silhouette readable at 56px. ONE isolated object centered in a square canvas at 70 percent canvas extent, generous 15 percent transparent margins, full object unclipped, three-quarter view. Genuinely transparent RGBA background including all holes and openings. No floor, no external cast shadow, no white or black background, no baked checkerboard, no white halo, no frame, no text labels, no people, no duplicate objects. ",
+      "reference": null
+    },
+    {
+      "asset": "seal_grenade_field.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent RGBA game field sprite. Image 1 is the edit/design target, not a backdrop. Create the FIELD SPRITE variant of this exact 魔封手榴弾. Preserve the exact segmented oval iron body, brass lever and ring, ivory sealing band, purple bead and burgundy knot. Show it from a higher three-quarter view appropriate to a top-down 2D game, complete object with top assembly toward the TOP and body toward the bottom. Simplify tiny engraving contrast just enough to remain readable as a small thrown item. No detonation, no flying debris, no fuse trail. Same mature semi-realistic painted Japanese horror item style. Square canvas with full object centered and clear margins; keep all parts unclipped. Output exactly ONE isolated sprite. Genuine alpha transparency both outside the object and in interior holes such as trigger guards and pin rings. Do not draw a black or white backdrop, checkerboard, title, border, labels, any shadow outside the object or watermark. Keep colors/materials and ornament identity from the reference; do not redesign.",
+      "reference": "seal_grenade_icon.png"
+    },
+    {
+      "asset": "stun_grenade_icon.png",
+      "mode": "built-in image_gen",
+      "prompt": "Primary request: スタングレネード, a compact cylindrical flashbang grenade. Clearly different silhouette from an egg-shaped fragmentation grenade: straight short cylindrical aged steel canister, a few broad horizontal vent slots, brass rim, a top safety ring and lever, one narrow paper sealing strip and a small pale icy-blue glass inset. No active flash or smoke. Use case: stylized-concept. Asset type: a production-ready transparent PNG inventory icon for a Japanese supernatural night-survival game. Mature semi-realistic hand-painted game item, realistically weathered dark steel, aged engraved brass details, burgundy braided ritual cord and old ivory ofuda with abstract ink marks (not readable writing). Consistent somber Japanese horror art direction, controlled warm highlights, detailed tactile materials, strong silhouette readable at 56px. ONE isolated object centered in a square canvas at 70 percent canvas extent, generous 15 percent transparent margins, full object unclipped, three-quarter view. Genuinely transparent RGBA background including all holes and openings. No floor, no external cast shadow, no white or black background, no baked checkerboard, no white halo, no frame, no text labels, no people, no duplicate objects. ",
+      "reference": null
+    },
+    {
+      "asset": "stun_grenade_field.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent RGBA game field sprite. Image 1 is the edit/design target, not a backdrop. Create the FIELD SPRITE variant of this exact スタングレネード. Preserve the straight cylinder, three broad vent openings, pale icy-blue inset, brass lever and safety ring, ivory seal and burgundy wrapping. Higher three-quarter overhead view for a top-down 2D game, top assembly points UP and cylinder extends down. Complete single object, no detonation or light burst. Readable as a small thrown object. Same mature semi-realistic painted Japanese horror item style. Square canvas with full object centered and clear margins; keep all parts unclipped. Output exactly ONE isolated sprite. Genuine alpha transparency both outside the object and in interior holes such as trigger guards and pin rings. Do not draw a black or white backdrop, checkerboard, title, border, labels, any shadow outside the object or watermark. Keep colors/materials and ornament identity from the reference; do not redesign.",
+      "reference": "stun_grenade_icon.png"
+    },
+    {
+      "asset": "seal_mine_icon.png",
+      "mode": "built-in image_gen",
+      "prompt": "Primary request: 魔封地雷, a low circular spirit-sealing pressure mine. Wide squat dark iron disc with a slightly raised circular pressure plate, aged brass ring engraved with an abstract sealing motif, four small radial fasteners, and a thin burgundy cord secured round the rim. Central restrained purple inset. No explosive diagram, no mechanism cross section, no spikes, no antenna, no detonator wire. Seen three-quarter from above so it clearly reads as a floor-laid disc. Use case: stylized-concept. Asset type: a production-ready transparent PNG inventory icon for a Japanese supernatural night-survival game. Mature semi-realistic hand-painted game item, realistically weathered dark steel, aged engraved brass details, burgundy braided ritual cord and old ivory ofuda with abstract ink marks (not readable writing). Consistent somber Japanese horror art direction, controlled warm highlights, detailed tactile materials, strong silhouette readable at 56px. ONE isolated object centered in a square canvas at 70 percent canvas extent, generous 15 percent transparent margins, full object unclipped, three-quarter view. Genuinely transparent RGBA background including all holes and openings. No floor, no external cast shadow, no white or black background, no baked checkerboard, no white halo, no frame, no text labels, no people, no duplicate objects. ",
+      "reference": null
+    },
+    {
+      "asset": "seal_mine_field.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent RGBA game field sprite. Image 1 is the edit/design target, not a backdrop. Create the FIELD SPRITE variant of this exact 魔封地雷. Change only viewpoint to a clean near-orthographic TOP-DOWN view: circular disc viewed almost directly from overhead, the four fasteners at four cardinal positions, large aged-brass ritual pressure plate and purple center, dark iron perimeter and burgundy cord. Preserve reference design and visible ivory seals. The mine lies flat in the game world. No floor, ground patch, external cast shadow, extra object. Same mature semi-realistic painted Japanese horror item style. Square canvas with full object centered and clear margins; keep all parts unclipped. Output exactly ONE isolated sprite. Genuine alpha transparency both outside the object and in interior holes such as trigger guards and pin rings. Do not draw a black or white backdrop, checkerboard, title, border, labels, any shadow outside the object or watermark. Keep colors/materials and ornament identity from the reference; do not redesign.",
+      "reference": "seal_mine_icon.png"
+    },
+    {
+      "asset": "seal_launcher_icon.png",
+      "mode": "built-in image_gen",
+      "prompt": "Primary request: 魔封ロケットランチャー, a shoulder-fired single-use ritual rocket launcher. Long heavy straight dark steel launch tube with aged brass reinforcement rings, wide open front muzzle, compact lower grip and shoulder rest, burgundy cord binding and one old ivory sealing strip, a small purple stone near the grip. No scope clutter, no modern logos, no realistic manufacturer details. Diagonal inventory composition lower-left rear to upper-right front, all of tube fits in frame. Use case: stylized-concept. Asset type: a production-ready transparent PNG inventory icon for a Japanese supernatural night-survival game. Mature semi-realistic hand-painted game item, realistically weathered dark steel, aged engraved brass details, burgundy braided ritual cord and old ivory ofuda with abstract ink marks (not readable writing). Consistent somber Japanese horror art direction, controlled warm highlights, detailed tactile materials, strong silhouette readable at 56px. ONE isolated object centered in a square canvas at 70 percent canvas extent, generous 15 percent transparent margins, full object unclipped, three-quarter view. Genuinely transparent RGBA background including all holes and openings. No floor, no external cast shadow, no white or black background, no baked checkerboard, no white halo, no frame, no text labels, no people, no duplicate objects. ",
+      "reference": null
+    },
+    {
+      "asset": "seal_launcher_field.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent RGBA game field sprite. Image 1 is the edit/design target, not a backdrop. Create the FIELD SPRITE variant of this exact 魔封ロケットランチャー. Change only camera and pose to clean near-orthographic side view. Its long straight launch tube is perfectly horizontal, muzzle points RIGHT, shoulder rest at LEFT, grip down. Preserve the dark weathered iron, aged-brass rings, burgundy bindings, ivory seal near the muzzle and purple grip stone. Same weapon identity as the icon. No hand, no person, no muzzle flash, no smoke. Same mature semi-realistic painted Japanese horror item style. Square canvas with full object centered and clear margins; keep all parts unclipped. Output exactly ONE isolated sprite. Genuine alpha transparency both outside the object and in interior holes such as trigger guards and pin rings. Do not draw a black or white backdrop, checkerboard, title, border, labels, any shadow outside the object or watermark. Keep colors/materials and ornament identity from the reference; do not redesign.",
+      "reference": "seal_launcher_icon.png"
+    },
+    {
+      "asset": "seal_bullet.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent RGBA sprite for a top-down Japanese night horror action game.\nStyle: polished semi-realistic hand-painted game art, restrained occult Japanese aesthetic. Genuine transparent background including negative spaces, clean alpha edges. No backdrop, no floor, no cast shadow, no checkerboard, no text, no watermark, no extra objects. Centered complete single sprite with generous transparent edge padding.\nPrimary request: one fast magic-sealing gun bullet in flight. Compact pointed warm-brass projectile with a tiny purple energized tip and a thin short golden-violet motion streak trailing LEFT. Horizontal exact side view, nose points RIGHT so game engine can rotate to any aim direction. Crisp physical bullet readable at tiny size, subtly engraved old brass. Do not show cartridge casing, gun or large blast. Wide composition, tail and nose fully inside frame.",
+      "reference": null
+    },
+    {
+      "asset": "seal_rocket.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent RGBA sprite for a top-down Japanese night horror action game.\nStyle: polished semi-realistic hand-painted game art, restrained occult Japanese aesthetic. Genuine transparent background including negative spaces, clean alpha edges. No backdrop, no floor, no cast shadow, no checkerboard, no text, no watermark, no extra objects. Centered complete single sprite with generous transparent edge padding.\nPrimary request: one magic-sealing rocket projectile in flight. Short dark iron body, pointed aged-brass warhead facing RIGHT, small stabilizing fins at LEFT rear, narrow ivory seal band with abstract black ink marks and subtle purple glow. Small contained amber-purple exhaust trailing LEFT. Exact horizontal side view, centered complete projectile, readable at small game scale. No launcher, no bullet casing, no explosion. Wide composition.",
+      "reference": null
+    },
+    {
+      "asset": "seal_explosion.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent RGBA sprite for a top-down Japanese night horror action game.\nStyle: polished semi-realistic hand-painted game art, restrained occult Japanese aesthetic. Genuine transparent background including negative spaces, clean alpha edges. No backdrop, no floor, no cast shadow, no checkerboard, no text, no watermark, no extra objects. Centered complete single sprite with generous transparent edge padding.\nPrimary request: a single peak-frame magic-sealing explosion effect, viewed directly overhead for a 2D top-down game. Radially balanced turbulent amber-gold fire core surrounded by purple supernatural flame wisps, several small sparks, dark violet smoke curls thinning to genuine transparency at the outside. One coherent compact radial blast with irregular organic outline; square composition. Not a side-view mushroom cloud. Effect only: no ground, crater, characters, weapons, symbols, interface or words. Include smooth partly transparent glow wisps but retain fully transparent corners.",
+      "reference": null
+    },
+    {
+      "asset": "seal_hit.png",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent RGBA sprite for a top-down Japanese night horror action game.\nStyle: polished semi-realistic hand-painted game art, restrained occult Japanese aesthetic. Genuine transparent background including negative spaces, clean alpha edges. No backdrop, no floor, no cast shadow, no checkerboard, no text, no watermark, no extra objects. Centered complete single sprite with generous transparent edge padding.\nPrimary request: one small compact magical bullet-hit impact effect for a top-down horror game. Sharp irregular radial burst of warm-gold sparks from a pale violet central flash with short violet energy splinters and a few tiny dark wisps. Single isolated impact, square composition, readable at 32-64 game pixels, sharp lively silhouette. Not a large explosion, not a target object; no blood, holes, characters, surfaces, weapons or ground. Smooth partly transparent glow fading into fully transparent corners.",
+      "reference": null
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "夜道の追跡者 神域",
+  "short_name": "神域",
+  "description": "夜道の追跡者 神域 - iPhoneオフライン対応版",
+  "lang": "ja",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "assets/images/props/torii.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
