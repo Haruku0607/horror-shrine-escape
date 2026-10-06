@@ -1,8 +1,12 @@
 "use strict";
 
 const CACHE_PREFIX = "shrine-offline-";
-const CACHE_NAME = "shrine-offline-rev198-mobileux2";
+const CACHE_NAME = "shrine-offline-rev200-mobileux3";
 const ASSETS = [
+  {
+    "path": "./README.txt",
+    "bytes": 1850
+  },
   {
     "path": "./assets/audio/armed_capture.mp3",
     "bytes": 22568
@@ -384,6 +388,210 @@ const ASSETS = [
     "bytes": 881523
   },
   {
+    "path": "./assets/images/mobile/building_new.png",
+    "bytes": 450980
+  },
+  {
+    "path": "./assets/images/mobile/cracked_mirror.png",
+    "bytes": 29500
+  },
+  {
+    "path": "./assets/images/mobile/crate.png",
+    "bytes": 55965
+  },
+  {
+    "path": "./assets/images/mobile/crate_open.png",
+    "bytes": 90765
+  },
+  {
+    "path": "./assets/images/mobile/damaged_beads.png",
+    "bytes": 30857
+  },
+  {
+    "path": "./assets/images/mobile/eternal_magic_mirror.png",
+    "bytes": 28693
+  },
+  {
+    "path": "./assets/images/mobile/firecrackers.png",
+    "bytes": 28374
+  },
+  {
+    "path": "./assets/images/mobile/frayed_bell_rope.png",
+    "bytes": 31397
+  },
+  {
+    "path": "./assets/images/mobile/generated_sacred_tree.png",
+    "bytes": 159411
+  },
+  {
+    "path": "./assets/images/mobile/generated_shimenawa_topdown_square.png",
+    "bytes": 85276
+  },
+  {
+    "path": "./assets/images/mobile/ground_new.png",
+    "bytes": 538301
+  },
+  {
+    "path": "./assets/images/mobile/infinite_omamori.png",
+    "bytes": 26806
+  },
+  {
+    "path": "./assets/images/mobile/locker.png",
+    "bytes": 49785
+  },
+  {
+    "path": "./assets/images/mobile/locker_open.png",
+    "bytes": 62722
+  },
+  {
+    "path": "./assets/images/mobile/main_altar.png",
+    "bytes": 189644
+  },
+  {
+    "path": "./assets/images/mobile/matsuri_bell.png",
+    "bytes": 22481
+  },
+  {
+    "path": "./assets/images/mobile/max_stamina_drink.png",
+    "bytes": 23239
+  },
+  {
+    "path": "./assets/images/mobile/object_car.png",
+    "bytes": 89789
+  },
+  {
+    "path": "./assets/images/mobile/object_pole.png",
+    "bytes": 14431
+  },
+  {
+    "path": "./assets/images/mobile/old_talisman.png",
+    "bytes": 31242
+  },
+  {
+    "path": "./assets/images/mobile/omamori.png",
+    "bytes": 33688
+  },
+  {
+    "path": "./assets/images/mobile/player_single.png",
+    "bytes": 40234
+  },
+  {
+    "path": "./assets/images/mobile/road_new.png",
+    "bytes": 476718
+  },
+  {
+    "path": "./assets/images/mobile/sacred_matsuri_bell.png",
+    "bytes": 32301
+  },
+  {
+    "path": "./assets/images/mobile/saisen_coin.png",
+    "bytes": 31333
+  },
+  {
+    "path": "./assets/images/mobile/sealed_key_box.png",
+    "bytes": 94636
+  },
+  {
+    "path": "./assets/images/mobile/sealed_key_box_open.png",
+    "bytes": 90190
+  },
+  {
+    "path": "./assets/images/mobile/shrine_akane_glow.png",
+    "bytes": 62403
+  },
+  {
+    "path": "./assets/images/mobile/small_buddha.png",
+    "bytes": 27800
+  },
+  {
+    "path": "./assets/images/mobile/small_shrine.png",
+    "bytes": 80831
+  },
+  {
+    "path": "./assets/images/mobile/small_stone.png",
+    "bytes": 18472
+  },
+  {
+    "path": "./assets/images/mobile/stamina_drink.png",
+    "bytes": 27794
+  },
+  {
+    "path": "./assets/images/mobile/tansu.png",
+    "bytes": 64665
+  },
+  {
+    "path": "./assets/images/mobile/tansu_open.png",
+    "bytes": 74362
+  },
+  {
+    "path": "./assets/images/mobile/tattered_talisman.png",
+    "bytes": 27515
+  },
+  {
+    "path": "./assets/images/mobile/torii.png",
+    "bytes": 75981
+  },
+  {
+    "path": "./assets/images/mobile/worn_kokeshi.png",
+    "bytes": 22255
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_bullet.png",
+    "bytes": 16670
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_explosion.png",
+    "bytes": 429259
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_grenade.png",
+    "bytes": 55545
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_grenade_field.png",
+    "bytes": 96994
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_gun.png",
+    "bytes": 41366
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_gun_field.png",
+    "bytes": 65079
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_hit.png",
+    "bytes": 96772
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_launcher.png",
+    "bytes": 30246
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_launcher_field.png",
+    "bytes": 58987
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_mine.png",
+    "bytes": 67520
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_mine_field.png",
+    "bytes": 117538
+  },
+  {
+    "path": "./assets/images/mobile_counter/seal_rocket.png",
+    "bytes": 38314
+  },
+  {
+    "path": "./assets/images/mobile_counter/stun_grenade.png",
+    "bytes": 52230
+  },
+  {
+    "path": "./assets/images/mobile_counter/stun_grenade_field.png",
+    "bytes": 87597
+  },
+  {
     "path": "./assets/images/night_shadow_capture.png",
     "bytes": 1722594
   },
@@ -516,12 +724,20 @@ const ASSETS = [
     "bytes": 1422294
   },
   {
+    "path": "./cheat_commands.txt",
+    "bytes": 972
+  },
+  {
     "path": "./counterattack.js",
-    "bytes": 42440
+    "bytes": 42751
   },
   {
     "path": "./game.js",
-    "bytes": 321156
+    "bytes": 326328
+  },
+  {
+    "path": "./iPhone_setup_guide.txt",
+    "bytes": 2542
   },
   {
     "path": "./index.html",
@@ -533,15 +749,15 @@ const ASSETS = [
   },
   {
     "path": "./mobile-fit.js",
-    "bytes": 5845
+    "bytes": 6075
   },
   {
     "path": "./pwa.js",
-    "bytes": 7814
+    "bytes": 8544
   },
   {
     "path": "./style.css",
-    "bytes": 110449
+    "bytes": 118342
   }
 ];
 const TOTAL_BYTES = ASSETS.reduce((sum, item) => sum + item.bytes, 0);

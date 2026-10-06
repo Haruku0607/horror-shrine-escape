@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "rev198-mobileux2";
+  const VERSION = "rev200-mobileux3";
   const SW_URL = `service-worker.js?v=${VERSION}`;
   let registration = null;
   let overlay = null;
@@ -21,18 +21,19 @@
     if (overlay) return;
     const style = document.createElement("style");
     style.textContent = `
-      #offlinePrepOverlay{position:fixed;inset:0;z-index:1000000;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));background:rgba(0,0,0,.94);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+      #offlinePrepOverlay{position:fixed;inset:0;z-index:1000000;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));background:rgba(0,0,0,.94);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;overflow:hidden}
       #offlinePrepOverlay[hidden]{display:none}
-      #offlinePrepPanel{width:min(620px,92vw);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:22px;background:linear-gradient(180deg,rgba(40,18,18,.96),rgba(8,8,8,.98));box-shadow:0 20px 70px rgba(0,0,0,.6)}
-      #offlinePrepPanel h2{margin:0 0 12px;font-size:clamp(22px,5vw,32px);letter-spacing:.08em}
-      #offlinePrepPanel p{margin:8px 0;line-height:1.65;font-size:15px}
-      #offlinePrepTrack{height:13px;margin:17px 0 9px;border-radius:999px;overflow:hidden;background:#252525;border:1px solid #444}
+      #offlinePrepPanel{width:min(720px,94vw);max-height:calc(100dvh - max(16px,env(safe-area-inset-top)) - max(16px,env(safe-area-inset-bottom)));box-sizing:border-box;overflow-y:auto;-webkit-overflow-scrolling:touch;border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:clamp(12px,3vh,20px);background:linear-gradient(180deg,rgba(40,18,18,.96),rgba(8,8,8,.98));box-shadow:0 20px 70px rgba(0,0,0,.6)}
+      #offlinePrepPanel h2{margin:0 0 8px;font-size:clamp(20px,5vh,30px);letter-spacing:.08em}
+      #offlinePrepPanel p{margin:6px 0;line-height:1.45;font-size:clamp(13px,2.6vh,15px)}
+      #offlinePrepTrack{height:12px;margin:12px 0 7px;border-radius:999px;overflow:hidden;background:#252525;border:1px solid #444}
       #offlinePrepBar{width:0;height:100%;background:linear-gradient(90deg,#6b1111,#e05050);transition:width .15s linear}
       #offlinePrepDetail{font-variant-numeric:tabular-nums;color:#ddd}
-      #offlinePrepButtons{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-      #offlinePrepButtons button{min-width:120px;padding:11px 16px;border-radius:10px;border:1px solid #777;background:#191919;color:#fff;font-size:15px;font-weight:700}
+      #offlinePrepButtons{position:sticky;bottom:-1px;display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:8px;background:linear-gradient(180deg,rgba(8,8,8,0),rgba(8,8,8,.98) 35%)}
+      #offlinePrepButtons button{min-width:120px;padding:9px 14px;border-radius:10px;border:1px solid #777;background:#191919;color:#fff;font-size:14px;font-weight:700}
       #offlinePrepButtons button:active{transform:translateY(1px)}
       #offlinePrepRetry{background:#641515!important;border-color:#a54a4a!important}
+      @media (orientation:landscape) and (max-height:460px){#offlinePrepOverlay{align-items:stretch}#offlinePrepPanel{width:min(900px,96vw);max-height:100%;margin:auto;padding:10px 14px}#offlinePrepPanel h2{font-size:22px;margin-bottom:5px}#offlinePrepPanel p{font-size:13px;line-height:1.35;margin:4px 0}#offlinePrepTrack{margin:8px 0 5px}#offlinePrepButtons{margin-top:7px}}
     `;
     document.head.appendChild(style);
 

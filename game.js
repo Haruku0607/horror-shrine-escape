@@ -1286,7 +1286,18 @@ window.horrorPerfLogging = function(enabled = true) {
 };
 
 let lastMinimapDrawAt = 0;
-const MINIMAP_DRAW_INTERVAL_MS = 120;
+const MINIMAP_DRAW_INTERVAL_MS = 150;
+// iPhone keeps simulation/input at the browser refresh rate, but heavy canvas rendering
+// is paced to ~45 fps. This removes a sizable amount of draw work without changing game speed.
+let mobileRenderAccumulatorMs = 0;
+const MOBILE_RENDER_INTERVAL_MS = 1000 / 45;
+function shouldRenderHeavyFrame(rawFrameMs) {
+  if (!SMARTPHONE_ONLY) return true;
+  mobileRenderAccumulatorMs += Math.min(Math.max(rawFrameMs, 0), 50);
+  if (mobileRenderAccumulatorMs + 0.01 < MOBILE_RENDER_INTERVAL_MS) return false;
+  mobileRenderAccumulatorMs %= MOBILE_RENDER_INTERVAL_MS;
+  return true;
+}
 
 function drawMinimapOptimized(now, force = false) {
   if (force || now - lastMinimapDrawAt >= MINIMAP_DRAW_INTERVAL_MS) {
@@ -2244,6 +2255,7 @@ function startGame() {
   performanceStats.worstFrameMs = 0;
   performanceStats.lastSnapshot = null;
   lastMinimapDrawAt = 0;
+  mobileRenderAccumulatorMs = MOBILE_RENDER_INTERVAL_MS;
   playerInvincible = false;
   ultimateCheatActive = false;
   infiniteOmamoriActive = false;
@@ -2348,6 +2360,7 @@ function startGame() {
   enemyProjectiles = [];
   watcherFakeKeyBoxes = [];
   obstacles = obstacles.filter(o => o.type !== "fakeKeyBox");
+  rebuildObstacleSpatialIndex();
   watcherPhantoms = [];
   playerKnifeSlowTimers = [];
   if (currentEnemyType === "bugmaster") initBugSwarmAgents();
@@ -2472,6 +2485,7 @@ function startGame() {
 function createWorld() {
   worldZones = [];
   obstacles = [];
+  resetObstacleSpatialIndex();
   decorativeObjects = [];
   boxes = [];
   keyItemBoxes = [];
@@ -2870,16 +2884,17 @@ function gameLoop(now) {
   const dt = Math.min(rawFrameMs / 1000, 0.05);
   lastTime = now;
 
+  const renderHeavy = shouldRenderHeavyFrame(rawFrameMs);
   if (gameState === "playing") {
     updatePlaying(now, dt);
-    drawWorld();
+    if (renderHeavy) drawWorld();
     drawMinimapOptimized(now);
   } else if (gameState === "clearEvent") {
     updateClearEvent(dt);
-    drawWorld();
+    if (renderHeavy) drawWorld();
     drawMinimapOptimized(now);
   } else if (gameState === "pause") {
-    drawWorld();
+    if (renderHeavy) drawWorld();
     drawMinimapOptimized(now);
   }
 
@@ -7467,7 +7482,22 @@ function updateEnemy(dt) {
       trackerLineAccel = Math.max(0, trackerLineAccel - dt * 2.0);
     }
 
-    moveEnemyTowardPoint(pc.x, pc.y, dt, speed);
+    // canEnemySeePlayer() already proved that the direct segment is clear.
+    // Do not run A* every few tenths of a second while the enemy is visibly chasing;
+    // that was one of the largest iPhone spikes when a怪異 approached.
+    if (canSee) {
+      const ec = getEntityCenter(enemy);
+      const dx = pc.x - ec.x;
+      const dy = pc.y - ec.y;
+      const dist = Math.max(0.001, Math.hypot(dx, dy));
+      enemyFacingX = dx / dist;
+      enemyFacingY = dy / dist;
+      moveEntitySmart(enemy, enemyFacingX, enemyFacingY, speed * 60 * dt);
+      enemyPath = [];
+      enemyPathTimer = Math.max(enemyPathTimer, 0.30);
+    } else {
+      moveEnemyTowardPoint(pc.x, pc.y, dt, speed);
+    }
   } else {
     if (!enemyWanderTarget || distanceBetweenPoints(enemy.x, enemy.y, enemyWanderTarget.x, enemyWanderTarget.y) < 140) {
       enemyWanderTarget = findWanderTarget();
@@ -7543,7 +7573,7 @@ function moveEnemyTowardPoint(x, y, dt, speedValue) {
 
   if (enemyPathTimer <= 0 || enemyPath.length === 0) {
     enemyPath = findPath(getEntityCenter(enemy), target);
-    enemyPathTimer = enemyMode === "chase" ? 0.42 : enemyMode === "investigate" ? 0.55 : 1.2;
+    enemyPathTimer = enemyMode === "chase" ? 0.68 : enemyMode === "investigate" ? 0.82 : 1.35;
   } else {
     enemyPathTimer -= dt;
   }
@@ -7711,22 +7741,28 @@ function findPath(startPoint, goalPoint) {
   if (!safeStart || !safeGoal) return [];
 
   const key = (c, r) => c + "," + r;
+  const startKey = key(safeStart.col, safeStart.row);
   const open = [safeStart];
+  const openKeys = new Set([startKey]);
   const cameFrom = new Map();
-  const gScore = new Map();
-  const fScore = new Map();
-
-  gScore.set(key(safeStart.col, safeStart.row), 0);
-  fScore.set(key(safeStart.col, safeStart.row), heuristic(safeStart, safeGoal));
+  const gScore = new Map([[startKey, 0]]);
+  const fScore = new Map([[startKey, heuristic(safeStart, safeGoal)]]);
 
   let guard = 0;
 
   while (open.length > 0 && guard < 2500) {
     guard++;
 
-    open.sort((a, b) => (fScore.get(key(a.col, a.row)) ?? Infinity) - (fScore.get(key(b.col, b.row)) ?? Infinity));
-    const current = open.shift();
+    // Selecting only the minimum avoids sorting the entire open list on every A* step.
+    let bestIndex = 0;
+    let bestValue = Infinity;
+    for (let i = 0; i < open.length; i++) {
+      const value = fScore.get(key(open[i].col, open[i].row)) ?? Infinity;
+      if (value < bestValue) { bestValue = value; bestIndex = i; }
+    }
+    const current = open.splice(bestIndex, 1)[0];
     const currentKey = key(current.col, current.row);
+    openKeys.delete(currentKey);
 
     if (current.col === safeGoal.col && current.row === safeGoal.row) {
       return reconstructPath(cameFrom, current).slice(1);
@@ -7741,8 +7777,9 @@ function findPath(startPoint, goalPoint) {
         gScore.set(nk, tentative);
         fScore.set(nk, tentative + heuristic(n, safeGoal));
 
-        if (!open.some(c => c.col === n.col && c.row === n.row)) {
+        if (!openKeys.has(nk)) {
           open.push(n);
+          openKeys.add(nk);
         }
       }
     }
@@ -7821,8 +7858,82 @@ function heuristic(a, b) {
 // 衝突
 // ==============================
 
+const OBSTACLE_BUCKET_SIZE = 320;
+let obstacleSpatialIndex = new Map();
+
+function resetObstacleSpatialIndex() {
+  obstacleSpatialIndex = new Map();
+}
+
+function obstacleBucketKey(col, row) {
+  return `${col}:${row}`;
+}
+
+function indexObstacleSpatially(obstacle) {
+  const minCol = Math.floor(obstacle.x / OBSTACLE_BUCKET_SIZE);
+  const maxCol = Math.floor((obstacle.x + obstacle.width) / OBSTACLE_BUCKET_SIZE);
+  const minRow = Math.floor(obstacle.y / OBSTACLE_BUCKET_SIZE);
+  const maxRow = Math.floor((obstacle.y + obstacle.height) / OBSTACLE_BUCKET_SIZE);
+  for (let row = minRow; row <= maxRow; row++) {
+    for (let col = minCol; col <= maxCol; col++) {
+      const k = obstacleBucketKey(col, row);
+      let bucket = obstacleSpatialIndex.get(k);
+      if (!bucket) obstacleSpatialIndex.set(k, bucket = []);
+      bucket.push(obstacle);
+    }
+  }
+}
+
+function rebuildObstacleSpatialIndex() {
+  resetObstacleSpatialIndex();
+  for (const obstacle of obstacles) indexObstacleSpatially(obstacle);
+}
+
+function getObstacleCandidatesForRect(rect) {
+  if (!obstacleSpatialIndex.size) return obstacles;
+  const minCol = Math.floor(rect.left / OBSTACLE_BUCKET_SIZE);
+  const maxCol = Math.floor(rect.right / OBSTACLE_BUCKET_SIZE);
+  const minRow = Math.floor(rect.top / OBSTACLE_BUCKET_SIZE);
+  const maxRow = Math.floor(rect.bottom / OBSTACLE_BUCKET_SIZE);
+  const result = [];
+  const seen = new Set();
+  for (let row = minRow; row <= maxRow; row++) {
+    for (let col = minCol; col <= maxCol; col++) {
+      const bucket = obstacleSpatialIndex.get(obstacleBucketKey(col, row));
+      if (!bucket) continue;
+      for (const obstacle of bucket) {
+        if (seen.has(obstacle)) continue;
+        seen.add(obstacle);
+        result.push(obstacle);
+      }
+    }
+  }
+  return result;
+}
+
+function getObstacleCandidatesForPoint(x, y) {
+  if (!obstacleSpatialIndex.size) return obstacles;
+  return obstacleSpatialIndex.get(obstacleBucketKey(
+    Math.floor(x / OBSTACLE_BUCKET_SIZE),
+    Math.floor(y / OBSTACLE_BUCKET_SIZE)
+  )) || [];
+}
+
+function getObstacleCandidatesForSegment(x1, y1, x2, y2, pad = 0) {
+  return getObstacleCandidatesForRect({
+    left: Math.min(x1, x2) - pad,
+    top: Math.min(y1, y2) - pad,
+    right: Math.max(x1, x2) + pad,
+    bottom: Math.max(y1, y2) + pad
+  });
+}
+
 function addObstacle(x, y, width, height, type = "obstacle", blockPlayer = true, blockEnemy = true) {
-  obstacles.push({ x, y, width, height, type, blockPlayer, blockEnemy });
+  // rev199 accidentally pushed every obstacle twice. Apart from doubling collision/path work,
+  // that also made world construction noticeably stall on iPhone. Keep exactly one record.
+  const obstacle = { x, y, width, height, type, blockPlayer, blockEnemy };
+  obstacles.push(obstacle);
+  indexObstacleSpatially(obstacle);
 }
 
 function moveEntity(entity, moveX, moveY, isEnemyEntity) {
@@ -7874,7 +7985,7 @@ function isCollidingWithObstacle(entity, testX, testY, isEnemyEntity) {
     }
   }
 
-  for (const o of obstacles) {
+  for (const o of getObstacleCandidatesForRect(rect)) {
     const or = { left: o.x, top: o.y, right: o.x + o.width, bottom: o.y + o.height };
     if (!rectsOverlap(rect, or)) continue;
 
@@ -7886,6 +7997,35 @@ function isCollidingWithObstacle(entity, testX, testY, isEnemyEntity) {
     }
 
     if (o.blockPlayer) return true;
+  }
+
+  return false;
+}
+
+function collidesWithWorldPoint(x, y) {
+  if (x < 0 || y < 0 || x > WORLD_WIDTH || y > WORLD_HEIGHT) return true;
+
+  for (const o of getObstacleCandidatesForPoint(x, y)) {
+    if (x >= o.x && x <= o.x + o.width && y >= o.y && y <= o.y + o.height) return true;
+  }
+
+  return false;
+}
+
+function isLineBlocked(x1, y1, x2, y2) {
+  const dist = distanceBetweenPoints(x1, y1, x2, y2);
+  const steps = Math.ceil(dist / 42);
+
+  for (let i = 1; i < steps; i++) {
+    const t = i / steps;
+    const x = x1 + (x2 - x1) * t;
+    const y = y1 + (y2 - y1) * t;
+
+    for (const o of getObstacleCandidatesForPoint(x, y)) {
+      if (enemyCanEnterSanctuary && isSanctuaryBlocker(o)) continue;
+      if (o.type === "smallShrineRope" || o.type === "sacredTreeWall") continue;
+      if (x >= o.x && x <= o.x + o.width && y >= o.y && y <= o.y + o.height) return true;
+    }
   }
 
   return false;

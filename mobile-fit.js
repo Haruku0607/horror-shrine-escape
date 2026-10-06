@@ -50,7 +50,9 @@
     if (!rightRail.parentElement) gameScreen.appendChild(rightRail);
 
     moveIfPresent("inventoryPanel", leftRail);
-    moveIfPresent("selectedItemName", leftRail);
+    // The selected-item text must not occupy the same lower-left rail as the joystick.
+    // Keep it as a compact chip beside the playfield instead.
+    moveIfPresent("selectedItemName", gameScreen);
     moveIfPresent("minimap", rightRail);
 
     // These HUD elements must stay readable and therefore must not be scaled with the playfield.
@@ -70,7 +72,8 @@
     const observer = new MutationObserver(() => {
       const hud = document.getElementById("counterHud");
       const reload = document.getElementById("counterReloadButton");
-      if (hud && hud.parentElement !== gameScreen) gameScreen.appendChild(hud);
+      // Ammo/reload UI belongs under the minimap, not below the pause button.
+      if (hud && hud.parentElement !== rightRail) rightRail.appendChild(hud);
       if (reload && reload.parentElement !== rightRail) rightRail.appendChild(reload);
     });
     observer.observe(document.body, { childList: true, subtree: true });

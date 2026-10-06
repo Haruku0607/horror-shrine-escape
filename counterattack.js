@@ -321,7 +321,10 @@
       const t=targetHit(x1,y1,x2,y2,target,pad);
       if(t!==null && t<tMin) { tMin=t;hit={t,target}; }
     }
-    for(const o of obstacles) {
+    const obstacleCandidates = typeof getObstacleCandidatesForSegment === 'function'
+      ? getObstacleCandidatesForSegment(x1,y1,x2,y2,pad)
+      : obstacles;
+    for(const o of obstacleCandidates) {
       // Fake boxes are damageable. Gates represent an invisible enemy-only barrier,
       // not a building; the physical trees, ropes and structures still block bullets.
       if(o.type==='fakeKeyBox' || isSanctuaryBlocker(o)) continue;
@@ -553,7 +556,7 @@
     else if(t.kind==='miezaruClone') { miezaruClones=miezaruClones.filter(v=>v!==t.object);miezaruCloneTimer=Math.max(8,miezaruCloneTimer); }
     else if(t.kind==='fakeBox') {
       watcherFakeKeyBoxes=watcherFakeKeyBoxes.filter(v=>v!==t.object);
-      obstacles=obstacles.filter(o=>!(o.type==='fakeKeyBox'&&o.x===t.object.x&&o.y===t.object.y));
+      obstacles=obstacles.filter(o=>!(o.type==='fakeKeyBox'&&o.x===t.object.x&&o.y===t.object.y)); if(typeof rebuildObstacleSpatialIndex==='function') rebuildObstacleSpatialIndex();
     } else if(t.kind==='phantom') watcherPhantoms=watcherPhantoms.filter(v=>v!==t.object);
     else if(t.kind==='objectPhantom') watcherObjectPhantoms=watcherObjectPhantoms.filter(v=>v!==t.object);
     // Ground tentacles/walls remain as inactive slots until revival, so a new spawn
@@ -611,7 +614,7 @@
     } else if(state.hasSeenHealth) {
       state.targetCacheTimer-=dt;
       if(state.targetCacheTimer<=0 || !state.targetCache.length) {
-        state.targetCache=targets();state.targetCacheTimer=0.05;
+        state.targetCache=targets();state.targetCacheTimer=(document.body.classList.contains('smartphoneOnly')?0.10:0.05);
       }
       list=state.targetCache;
     } else {
