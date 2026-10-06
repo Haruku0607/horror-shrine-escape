@@ -1,7 +1,7 @@
 "use strict";
 
 const CACHE_PREFIX = "shrine-offline-";
-const CACHE_NAME = "shrine-offline-rev198-mobilefit1";
+const CACHE_NAME = "shrine-offline-rev198-mobileux2";
 const ASSETS = [
   {
     "path": "./assets/audio/armed_capture.mp3",
@@ -521,27 +521,27 @@ const ASSETS = [
   },
   {
     "path": "./game.js",
-    "bytes": 320592
+    "bytes": 321156
   },
   {
     "path": "./index.html",
-    "bytes": 13155
+    "bytes": 13154
   },
   {
     "path": "./manifest.webmanifest",
-    "bytes": 480
+    "bytes": 494
   },
   {
     "path": "./mobile-fit.js",
-    "bytes": 1959
+    "bytes": 5845
   },
   {
     "path": "./pwa.js",
-    "bytes": 7815
+    "bytes": 7814
   },
   {
     "path": "./style.css",
-    "bytes": 84540
+    "bytes": 110449
   }
 ];
 const TOTAL_BYTES = ASSETS.reduce((sum, item) => sum + item.bytes, 0);
@@ -682,23 +682,83 @@ self.addEventListener("message", event => {
   }
 });
 
+async function makeRangeResponse(fullResponse, rangeHeader) {
+  const buffer = await fullResponse.arrayBuffer();
+  const size = buffer.byteLength;
+  const match = /^bytes=(\d*)-(\d*)$/i.exec(String(rangeHeader || "").trim());
+  if (!match || size <= 0) return fullResponse;
+
+  let start;
+  let end;
+  if (match[1] === "" && match[2] !== "") {
+    const suffix = Math.max(0, Number(match[2]) || 0);
+    start = Math.max(0, size - suffix);
+    end = size - 1;
+  } else {
+    start = Math.max(0, Number(match[1]) || 0);
+    end = match[2] === "" ? size - 1 : Math.min(size - 1, Number(match[2]) || 0);
+  }
+
+  if (start >= size || end < start) {
+    return new Response(null, {
+      status: 416,
+      headers: { "Content-Range": `bytes */${size}` }
+    });
+  }
+
+  const chunk = buffer.slice(start, end + 1);
+  const headers = new Headers(fullResponse.headers);
+  headers.set("Content-Range", `bytes ${start}-${end}/${size}`);
+  headers.set("Accept-Ranges", "bytes");
+  headers.set("Content-Length", String(chunk.byteLength));
+  return new Response(chunk, { status: 206, statusText: "Partial Content", headers });
+}
+
+function isCoreAsset(url) {
+  return /\.(?:html?|css|js|webmanifest)$/i.test(url.pathname);
+}
+
 self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET") return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (request.mode === "navigate") {
+  // iOS/Safari requests MP3/WAV files with Range headers. Returning a normal
+  // cached 200 response breaks playback, so serve a real 206 response from
+  // the offline cache when a byte range is requested.
+  const rangeHeader = request.headers.get("range");
+  if (rangeHeader) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
-      const cached = await cache.match("./index.html", {ignoreSearch:true});
-      if (cached) return cached;
+      const cached = await cache.match(request, { ignoreSearch: true });
+      if (cached) return makeRangeResponse(cached, rangeHeader);
       try {
-        const network = await fetch(request);
-        if (network && network.ok) await cache.put("./index.html", network.clone());
-        return network;
+        return await fetch(request);
       } catch (_) {
         return Response.error();
+      }
+    })());
+    return;
+  }
+
+  // While online, refresh the application shell first. This prevents an old
+  // Service Worker from pinning stale HTML/CSS/JS after a GitHub Pages update.
+  if (request.mode === "navigate" || isCoreAsset(url)) {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      try {
+        const network = await fetch(request, { cache: "no-cache" });
+        if (network && network.ok) {
+          const key = request.mode === "navigate" ? "./index.html" : request;
+          await cache.put(key, network.clone());
+        }
+        return network;
+      } catch (_) {
+        const fallback = request.mode === "navigate"
+          ? await cache.match("./index.html", { ignoreSearch: true })
+          : await cache.match(request, { ignoreSearch: true });
+        return fallback || Response.error();
       }
     })());
     return;
@@ -710,7 +770,7 @@ self.addEventListener("fetch", event => {
     if (cached) return cached;
     try {
       const network = await fetch(request);
-      if (network && network.ok) await cache.put(request, network.clone());
+      if (network && network.ok && network.status === 200) await cache.put(request, network.clone());
       return network;
     } catch (_) {
       return Response.error();

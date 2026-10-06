@@ -1,30 +1,114 @@
 (() => {
   "use strict";
 
-  const DESIGN_WIDTH = 1120;
-  const DESIGN_HEIGHT = 720;
-  const EDGE_GAP = 2;
+  const STAGE_WIDTH = 800;
+  const STAGE_HEIGHT = 500;
+  const MIN_SIDE = 96;
+  const MAX_SIDE = 166;
+  const EDGE_GAP = 6;
 
-  function visibleViewportSize() {
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function visibleViewport() {
     const vv = window.visualViewport;
-    const width = vv && Number.isFinite(vv.width) ? vv.width : window.innerWidth;
-    const height = vv && Number.isFinite(vv.height) ? vv.height : window.innerHeight;
     return {
-      width: Math.max(1, width - EDGE_GAP * 2),
-      height: Math.max(1, height - EDGE_GAP * 2)
+      width: Math.max(1, vv?.width || window.innerWidth || document.documentElement.clientWidth || 1),
+      height: Math.max(1, vv?.height || window.innerHeight || document.documentElement.clientHeight || 1),
+      left: Math.max(0, vv?.offsetLeft || 0),
+      top: Math.max(0, vv?.offsetTop || 0)
     };
+  }
+
+  function createRail(id, className) {
+    let rail = document.getElementById(id);
+    if (rail) return rail;
+    rail = document.createElement("div");
+    rail.id = id;
+    rail.className = className;
+    return rail;
+  }
+
+  function moveIfPresent(id, parent) {
+    const el = document.getElementById(id);
+    if (el && el.parentElement !== parent) parent.appendChild(el);
+    return el;
+  }
+
+  function installMobileLayout() {
+    document.documentElement.classList.add("mobileUx");
+    document.body.classList.add("touchMode", "smartphoneOnly", "mobileUx");
+
+    const gameScreen = document.getElementById("gameScreen");
+    const scaler = document.getElementById("gameViewportScaler");
+    if (!gameScreen || !scaler) return;
+
+    const leftRail = createRail("mobileHudLeft", "mobileHudRail mobileHudLeft");
+    const rightRail = createRail("mobileHudRight", "mobileHudRail mobileHudRight");
+    if (!leftRail.parentElement) gameScreen.insertBefore(leftRail, scaler);
+    if (!rightRail.parentElement) gameScreen.appendChild(rightRail);
+
+    moveIfPresent("inventoryPanel", leftRail);
+    moveIfPresent("selectedItemName", leftRail);
+    moveIfPresent("minimap", rightRail);
+
+    // These HUD elements must stay readable and therefore must not be scaled with the playfield.
+    ["staminaGauge", "buddhaGauge", "ugomeEscapeGauge", "messageBox", "promptBox", "pauseOverlay"].forEach(id => {
+      moveIfPresent(id, gameScreen);
+    });
+
+    let rotateNotice = document.getElementById("rotateNotice");
+    if (!rotateNotice) {
+      rotateNotice = document.createElement("div");
+      rotateNotice.id = "rotateNotice";
+      rotateNotice.innerHTML = '<strong>横向きでプレイ</strong><span>iPhoneを横向きにしてください</span>';
+      gameScreen.appendChild(rotateNotice);
+    }
+
+    // Counterattack UI is created after this file runs. Re-home the readable parts when they appear.
+    const observer = new MutationObserver(() => {
+      const hud = document.getElementById("counterHud");
+      const reload = document.getElementById("counterReloadButton");
+      if (hud && hud.parentElement !== gameScreen) gameScreen.appendChild(hud);
+      if (reload && reload.parentElement !== rightRail) rightRail.appendChild(reload);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   function fitGameToVisibleViewport() {
     const scaler = document.getElementById("gameViewportScaler");
-    if (!scaler) return;
+    const gameScreen = document.getElementById("gameScreen");
+    if (!scaler || !gameScreen) return;
 
-    const viewport = visibleViewportSize();
-    const scale = Math.min(viewport.width / DESIGN_WIDTH, viewport.height / DESIGN_HEIGHT, 1);
-    const safeScale = Number.isFinite(scale) && scale > 0 ? scale : 1;
+    const vp = visibleViewport();
+    const landscape = vp.width >= vp.height;
+    document.body.classList.toggle("portraitGame", !landscape);
 
-    scaler.style.setProperty("--game-fit-scale", safeScale.toFixed(5));
-    scaler.dataset.fitScale = safeScale.toFixed(5);
+    if (!landscape) {
+      const scale = Math.min((vp.width - 12) / STAGE_WIDTH, (vp.height - 110) / STAGE_HEIGHT, 1);
+      gameScreen.style.setProperty("--game-fit-scale", Math.max(.35, scale).toFixed(5));
+      gameScreen.style.setProperty("--mobile-side", "0px");
+      gameScreen.style.setProperty("--stage-width", `${STAGE_WIDTH * Math.max(.35, scale)}px`);
+      gameScreen.style.setProperty("--stage-height", `${STAGE_HEIGHT * Math.max(.35, scale)}px`);
+      return;
+    }
+
+    // Reserve the landscape gutters for HUD and controls instead of shrinking them with the game.
+    const desiredSide = clamp(vp.width * 0.145, vp.width < 740 ? MIN_SIDE : 108, MAX_SIDE);
+    const widthScale = Math.max(.45, (vp.width - desiredSide * 2 - EDGE_GAP * 2) / STAGE_WIDTH);
+    const heightScale = Math.max(.45, (vp.height - EDGE_GAP * 2) / STAGE_HEIGHT);
+    const scale = Math.min(widthScale, heightScale, 1.08);
+    const stageWidth = STAGE_WIDTH * scale;
+    const stageHeight = STAGE_HEIGHT * scale;
+    const side = Math.max(0, (vp.width - stageWidth) / 2);
+
+    gameScreen.style.setProperty("--game-fit-scale", scale.toFixed(5));
+    gameScreen.style.setProperty("--mobile-side", `${Math.max(84, side - EDGE_GAP)}px`);
+    gameScreen.style.setProperty("--stage-width", `${stageWidth}px`);
+    gameScreen.style.setProperty("--stage-height", `${stageHeight}px`);
+    gameScreen.style.setProperty("--stage-left", `${side}px`);
+    gameScreen.style.setProperty("--visible-height", `${vp.height}px`);
   }
 
   let rafId = 0;
@@ -34,6 +118,11 @@
       rafId = 0;
       fitGameToVisibleViewport();
     });
+  }
+
+  function boot() {
+    installMobileLayout();
+    scheduleFit();
   }
 
   window.addEventListener("resize", scheduleFit, { passive: true });
@@ -53,11 +142,10 @@
   });
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", scheduleFit, { once: true });
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
   } else {
-    scheduleFit();
+    boot();
   }
 
-  // Exposed for debugging / future UI changes.
   window.fitGameToVisibleViewport = fitGameToVisibleViewport;
 })();

@@ -1,7 +1,7 @@
 {
   "name": "夜道の追跡者 神域",
   "short_name": "神域",
-  "description": "夜道の追跡者 神域 - iPhoneオフライン対応版",
+  "description": "夜道の追跡者 神域 - iPhone完全オフライン・スマホUI版",
   "lang": "ja",
   "start_url": "./index.html",
   "scope": "./",

@@ -296,6 +296,8 @@ function createAudio(src, loop) {
   const audio = new Audio(src);
   audio.loop = loop;
   audio.preload = "auto";
+  audio.setAttribute("playsinline", "");
+  audio.setAttribute("webkit-playsinline", "");
   return audio;
 }
 
@@ -1844,6 +1846,17 @@ function safeOn(element, type, handler) {
   element.addEventListener(type, handler);
 }
 
+safeOn(warningScreen, "pointerdown", () => {
+  // iOS requires the first media play to happen directly inside a user gesture.
+  // Prime the title BGM here (before the click/fade) so later game audio can start normally.
+  if (sounds.title && sounds.title.paused) {
+    try {
+      sounds.title.currentTime = 0;
+      setAudioVolume(sounds.title, Math.max(0.01, getMasterVolume() * getBgmVolume() * 0.8));
+      sounds.title.play().catch(() => {});
+    } catch (_) {}
+  }
+});
 safeOn(warningScreen, "click", dismissWarningIntro);
 safeOn(startButton, "click", startGame);
 safeOn(howToButton, "click", showHowTo);

@@ -3270,3 +3270,761 @@ body.smartphoneOnly #touchControls {
     top: max(8px, env(safe-area-inset-top));
   }
 }
+
+/* ========================================================================== */
+/* rev198-mobileux2: iPhone landscape UI/UX redesign                          */
+/* ========================================================================== */
+:root {
+  --mobile-side: 124px;
+  --game-fit-scale: .75;
+  --stage-width: 600px;
+  --stage-height: 375px;
+  --joy-size: clamp(96px, calc(var(--mobile-side) - 12px), 124px);
+  --touch-size: clamp(58px, calc(var(--mobile-side) * .48), 72px);
+  --touch-gap: 6px;
+  --action-cluster-width: calc(var(--touch-size) * 2 + var(--touch-gap));
+}
+
+html.mobileUx,
+html.mobileUx body,
+body.mobileUx #app {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100dvh !important;
+  overflow: hidden !important;
+  background: #000 !important;
+}
+
+body.mobileUx .screen {
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+}
+
+/* ---- Gameplay: central 800x500 playfield + two dedicated mobile HUD rails ---- */
+body.mobileUx #gameScreen {
+  position: absolute !important;
+  inset: 0 !important;
+  display: none;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  overflow: hidden !important;
+  background: #000 !important;
+}
+body.mobileUx #gameScreen.active { display: block !important; }
+
+body.mobileUx #gameViewportScaler {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 800px !important;
+  height: 500px !important;
+  transform-origin: 50% 50% !important;
+  transform: translate(-50%, -50%) scale(var(--game-fit-scale, .75)) !important;
+  margin: 0 !important;
+  pointer-events: auto !important;
+  will-change: transform;
+  z-index: 10;
+}
+body.mobileUx #gameViewportScaler > #gameViewport,
+body.mobileUx #gameViewport {
+  position: relative !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 800px !important;
+  height: 500px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  border: 2px solid rgba(80,94,116,.78) !important;
+  background: #020306 !important;
+  box-shadow: 0 0 30px rgba(0,0,0,.95), inset 0 0 40px rgba(0,0,0,.8) !important;
+}
+body.mobileUx #cameraStage {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 800px !important;
+  height: 500px !important;
+  transform: none !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+.mobileHudRail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--mobile-side);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: max(7px, env(safe-area-inset-top));
+  padding-bottom: max(7px, env(safe-area-inset-bottom));
+  pointer-events: none;
+  overflow: hidden;
+}
+.mobileHudLeft {
+  left: 0;
+  padding-left: max(5px, env(safe-area-inset-left));
+  padding-right: 5px;
+}
+.mobileHudRight {
+  right: 0;
+  padding-right: max(5px, env(safe-area-inset-right));
+  padding-left: 5px;
+}
+
+body.mobileUx #inventoryPanel {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 6px !important;
+  gap: 5px !important;
+  background: linear-gradient(180deg, rgba(8,12,20,.92), rgba(0,0,0,.78)) !important;
+  border: 1px solid rgba(226,232,240,.28) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 0 14px rgba(0,0,0,.75), inset 0 0 12px rgba(255,255,255,.025) !important;
+  pointer-events: auto !important;
+}
+body.mobileUx #inventoryPanel .invGroup {
+  display: block !important;
+  margin: 0 !important;
+}
+body.mobileUx #inventoryPanel .groupLabel {
+  width: auto !important;
+  margin: 0 0 4px !important;
+  color: #e5e7eb !important;
+  font-size: clamp(11px, 1.5vh, 13px) !important;
+  line-height: 1 !important;
+  letter-spacing: .14em !important;
+  text-align: left !important;
+  font-weight: 800 !important;
+}
+body.mobileUx #itemSlots {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  width: 100% !important;
+}
+body.mobileUx #keySlots {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+  width: 100% !important;
+}
+body.mobileUx #inventoryPanel .slot,
+body.mobileUx #counterGunSlot {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  border-radius: 6px !important;
+  background-size: 86% 86% !important;
+}
+body.mobileUx #inventoryPanel .itemSlot::before,
+body.mobileUx #counterGunSlot::after {
+  left: 4px !important;
+  top: 2px !important;
+  font-size: clamp(11px, 1.45vh, 13px) !important;
+}
+body.mobileUx #selectedItemName {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 20px !important;
+  margin: 0 !important;
+  padding: 3px 4px !important;
+  color: #fff3b0 !important;
+  font-size: clamp(12px, 1.7vh, 15px) !important;
+  line-height: 1.25 !important;
+  text-align: center !important;
+  overflow-wrap: anywhere !important;
+  text-shadow: 0 1px 4px #000, 0 0 8px #000 !important;
+  pointer-events: none !important;
+}
+
+body.mobileUx #minimap {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  width: min(calc(var(--mobile-side) - 12px), 152px) !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 auto !important;
+  border: 2px solid rgba(203,213,225,.42) !important;
+  border-radius: 7px !important;
+  background: rgba(0,0,0,.78) !important;
+  box-shadow: 0 0 18px rgba(0,0,0,.85) !important;
+  pointer-events: none !important;
+}
+
+/* Readable gameplay text is outside the scaled playfield. */
+body.mobileUx #messageBox,
+body.mobileUx #promptBox {
+  position: absolute !important;
+  left: 50% !important;
+  width: min(64vw, 520px) !important;
+  min-width: 0 !important;
+  max-width: var(--stage-width) !important;
+  transform: translateX(-50%) !important;
+  border-radius: 8px !important;
+  line-height: 1.35 !important;
+  pointer-events: none !important;
+  z-index: 560 !important;
+}
+body.mobileUx #messageBox {
+  bottom: max(40px, calc(env(safe-area-inset-bottom) + 36px)) !important;
+  padding: 8px 12px !important;
+  font-size: clamp(14px, 2.05vh, 17px) !important;
+}
+body.mobileUx #promptBox {
+  bottom: max(78px, calc(env(safe-area-inset-bottom) + 74px)) !important;
+  padding: 7px 11px !important;
+  font-size: clamp(13px, 1.9vh, 16px) !important;
+}
+
+body.mobileUx #staminaGauge,
+body.mobileUx.touchMode #staminaGauge {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: max(9px, calc(env(safe-area-inset-bottom) + 5px)) !important;
+  width: min(43vw, 430px) !important;
+  height: 12px !important;
+  min-height: 12px !important;
+  transform: translateX(-50%) !important;
+  transform-origin: center !important;
+  z-index: 570 !important;
+  opacity: 0 !important;
+  display: block !important;
+  overflow: visible !important;
+  border: 1px solid rgba(255,255,255,.42) !important;
+  border-radius: 999px !important;
+  background: rgba(0,0,0,.72) !important;
+  box-shadow: 0 0 10px rgba(0,0,0,.95), inset 0 0 4px rgba(0,0,0,.8) !important;
+}
+body.mobileUx #staminaGauge.show { opacity: 1 !important; }
+body.mobileUx #staminaGauge::before {
+  content: "STAMINA" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: -18px !important;
+  width: auto !important;
+  height: auto !important;
+  transform: translateX(-50%) !important;
+  background: none !important;
+  color: rgba(255,255,255,.78) !important;
+  font: 800 10px/1 -apple-system,BlinkMacSystemFont,"Yu Gothic",sans-serif !important;
+  letter-spacing: .16em !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+}
+body.mobileUx #staminaGauge::after { display: none !important; }
+body.mobileUx #staminaGaugeFill {
+  top: 0 !important;
+  height: 100% !important;
+  min-height: 10px !important;
+  border-radius: 999px !important;
+}
+
+body.mobileUx #buddhaGauge,
+body.mobileUx #ugomeEscapeGauge {
+  position: absolute !important;
+  left: 50% !important;
+  width: min(46vw, 460px) !important;
+  height: 20px !important;
+  transform: translateX(-50%) !important;
+  z-index: 575 !important;
+}
+body.mobileUx #buddhaGauge { bottom: 62px !important; }
+body.mobileUx #ugomeEscapeGauge { bottom: 88px !important; }
+body.mobileUx #buddhaGaugeText,
+body.mobileUx #ugomeEscapeGauge span { font-size: 12px !important; }
+
+/* ---- Touch controls: large enough to hit with thumbs, centered in the side rails ---- */
+body.mobileUx #touchControls {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  z-index: 600 !important;
+  pointer-events: none !important;
+}
+body.mobileUx #touchStick {
+  left: max(env(safe-area-inset-left), calc((var(--mobile-side) - var(--joy-size)) / 2)) !important;
+  bottom: max(7px, env(safe-area-inset-bottom)) !important;
+  width: var(--joy-size) !important;
+  height: var(--joy-size) !important;
+  opacity: .92 !important;
+  border-width: 2px !important;
+  background: rgba(15,23,42,.56) !important;
+  box-shadow: inset 0 0 24px rgba(255,255,255,.06), 0 0 20px rgba(0,0,0,.58) !important;
+}
+body.mobileUx #touchStickKnob {
+  width: 46% !important;
+  height: 46% !important;
+  margin-left: -23% !important;
+  margin-top: -23% !important;
+  background: rgba(236,241,247,.88) !important;
+}
+body.mobileUx #touchActionCluster {
+  right: max(env(safe-area-inset-right), calc((var(--mobile-side) - var(--action-cluster-width)) / 2)) !important;
+  bottom: max(8px, env(safe-area-inset-bottom)) !important;
+  gap: var(--touch-gap) !important;
+  width: var(--action-cluster-width) !important;
+  pointer-events: auto !important;
+}
+body.mobileUx #touchRunButton,
+body.mobileUx #touchUseButton {
+  width: var(--touch-size) !important;
+  height: var(--touch-size) !important;
+  min-width: var(--touch-size) !important;
+  min-height: var(--touch-size) !important;
+  opacity: .9 !important;
+  border-width: 2px !important;
+  background-size: 66% 66% !important;
+  box-shadow: 0 0 18px rgba(0,0,0,.58), inset 0 0 14px rgba(255,255,255,.08) !important;
+}
+body.mobileUx #touchUseButton { background-color: rgba(30,130,225,.64) !important; }
+body.mobileUx #touchRunButton.active { opacity: 1 !important; }
+body.mobileUx #touchPauseButton {
+  left: 50% !important;
+  top: max(6px, env(safe-area-inset-top)) !important;
+  min-width: 104px !important;
+  min-height: 42px !important;
+  padding: 8px 18px !important;
+  border-width: 1.5px !important;
+  font-size: 16px !important;
+  letter-spacing: .06em !important;
+  background: rgba(8,12,20,.86) !important;
+  z-index: 650 !important;
+}
+
+/* Counterattack mobile HUD. */
+body.mobileUx #counterHud {
+  position: absolute !important;
+  left: 50% !important;
+  top: max(52px, calc(env(safe-area-inset-top) + 48px)) !important;
+  width: min(52vw, 450px) !important;
+  max-width: var(--stage-width) !important;
+  transform: translateX(-50%) !important;
+  padding: 6px 10px !important;
+  border-radius: 7px !important;
+  font-size: clamp(12px, 1.75vh, 15px) !important;
+  line-height: 1.35 !important;
+  text-align: center !important;
+  z-index: 565 !important;
+}
+body.mobileUx #counterReloadButton {
+  position: absolute !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: calc(max(8px, env(safe-area-inset-bottom)) + var(--touch-size) + 12px) !important;
+  transform: translateX(-50%) !important;
+  min-width: min(106px, calc(var(--mobile-side) - 8px)) !important;
+  padding: 9px 8px !important;
+  font-size: 13px !important;
+  line-height: 1.05 !important;
+  z-index: 620 !important;
+  pointer-events: auto !important;
+}
+
+/* ---- Pause menu: readable and self-contained on one landscape screen ---- */
+body.mobileUx #pauseOverlay.show {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1200 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  padding: max(8px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)) !important;
+  background: rgba(0,0,0,.82) !important;
+}
+body.mobileUx #pauseOverlay .pausePanel {
+  width: min(780px, 92vw) !important;
+  max-width: 92vw !important;
+  max-height: calc(100dvh - 16px) !important;
+  overflow: hidden !important;
+  padding: 14px 16px !important;
+}
+body.mobileUx #pauseOverlay .pausePanel h2 {
+  margin: 0 0 9px !important;
+  font-size: clamp(23px, 4.4vh, 31px) !important;
+}
+body.mobileUx #pauseOverlay .pauseColumns {
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin-bottom: 10px !important;
+}
+body.mobileUx #pauseOverlay .pauseColumns h3 {
+  margin: 0 0 5px !important;
+  font-size: 15px !important;
+}
+body.mobileUx #pauseOverlay .pauseInventory {
+  min-height: 58px !important;
+  max-height: 86px !important;
+  overflow: auto !important;
+  padding: 6px !important;
+  gap: 6px !important;
+}
+body.mobileUx #pauseOverlay .pauseItem {
+  width: 44px !important;
+  height: 44px !important;
+}
+body.mobileUx #pauseOverlay .pauseButtons {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+body.mobileUx #pauseOverlay .pauseButtons .menuButton {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 45px !important;
+  padding: 8px 6px !important;
+  font-size: 14px !important;
+}
+body.mobileUx #pauseOverlay .pauseHelp { display: none !important; }
+
+/* ---- All non-game screens fit the visible iPhone viewport without page scrolling ---- */
+body.mobileUx #warningScreen,
+body.mobileUx #titleScreen,
+body.mobileUx #settingsScreen,
+body.mobileUx #howToScreen,
+body.mobileUx #galleryScreen,
+body.mobileUx #recordsScreen,
+body.mobileUx #resultScreen {
+  box-sizing: border-box !important;
+  padding: max(7px, env(safe-area-inset-top)) max(9px, env(safe-area-inset-right)) max(7px, env(safe-area-inset-bottom)) max(9px, env(safe-area-inset-left)) !important;
+  overflow: hidden !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.mobileUx .warningPanel {
+  width: min(820px, 94vw) !important;
+  max-height: calc(100dvh - 14px) !important;
+  padding: clamp(14px, 3vh, 24px) clamp(18px, 3vw, 30px) !important;
+  overflow: hidden !important;
+}
+body.mobileUx .warningKicker { margin-bottom: 5px !important; font-size: 13px !important; }
+body.mobileUx .warningPanel h1 {
+  margin: 0 0 10px !important;
+  font-size: clamp(34px, 9vh, 58px) !important;
+  line-height: 1 !important;
+}
+body.mobileUx .warningPanel p {
+  margin: 7px 0 !important;
+  font-size: clamp(13px, 2.4vh, 16px) !important;
+  line-height: 1.5 !important;
+}
+body.mobileUx .warningClick { margin-top: 12px !important; font-size: 14px !important; }
+
+body.mobileUx #titleScreen .titlePanel {
+  width: min(900px, 94vw) !important;
+  max-width: 94vw !important;
+  max-height: calc(100dvh - 14px) !important;
+  padding: clamp(12px, 2.5vh, 20px) clamp(14px, 2.5vw, 24px) !important;
+  overflow: hidden !important;
+}
+body.mobileUx #titleScreen .titleSub {
+  margin: 0 0 5px !important;
+  font-size: clamp(11px, 1.9vh, 14px) !important;
+}
+body.mobileUx #titleScreen .titlePanel h1 {
+  margin: 0 0 clamp(8px, 1.8vh, 14px) !important;
+  font-size: clamp(29px, 8vh, 48px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: .12em !important;
+}
+body.mobileUx #titleScreen .titleButtonsWrap {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: clamp(6px, 1.5vh, 10px) !important;
+  width: 100% !important;
+}
+body.mobileUx #titleScreen .menuButton {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: clamp(42px, 8.6vh, 52px) !important;
+  padding: 8px 10px !important;
+  font-size: clamp(15px, 3.2vh, 19px) !important;
+  line-height: 1.05 !important;
+}
+body.mobileUx #titleScreen .audioNotice {
+  margin: clamp(7px, 1.5vh, 12px) 0 0 !important;
+  font-size: clamp(11px, 2vh, 13px) !important;
+  line-height: 1.35 !important;
+}
+body.mobileUx #counterTitleNote {
+  margin: 7px auto 0 !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+body.mobileUx .passphrasePanel {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 30 !important;
+  width: min(520px, 82vw) !important;
+  margin: 0 !important;
+  padding: 15px !important;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,.72), 0 0 30px rgba(126,34,206,.25) !important;
+}
+body.mobileUx .passphrasePanel label,
+body.mobileUx #passphraseInput,
+body.mobileUx .passphraseStatus { font-size: 16px !important; }
+body.mobileUx .passphraseActions .menuButton { min-height: 44px !important; }
+
+body.mobileUx #settingsScreen .settingsPanel,
+body.mobileUx #resultScreen .resultPanel {
+  width: min(760px, 92vw) !important;
+  max-width: 92vw !important;
+  max-height: calc(100dvh - 14px) !important;
+  margin: 0 !important;
+  padding: clamp(14px, 3vh, 22px) !important;
+  overflow: hidden !important;
+}
+body.mobileUx #settingsScreen .settingsPanel h2,
+body.mobileUx #resultScreen .resultPanel h2 {
+  margin: 0 0 12px !important;
+  font-size: clamp(26px, 6.5vh, 36px) !important;
+}
+body.mobileUx #settingsScreen .settingRow {
+  grid-template-columns: 120px minmax(180px, 1fr) 42px !important;
+  gap: 12px !important;
+  margin-bottom: clamp(9px, 2.2vh, 15px) !important;
+  font-size: 16px !important;
+}
+body.mobileUx #settingsScreen input[type="range"] { min-height: 32px !important; }
+body.mobileUx #settingsScreen .settingsActionButtons { margin: 8px 0 !important; }
+body.mobileUx #settingsScreen .menuButton,
+body.mobileUx #resultScreen .menuButton {
+  min-width: 170px !important;
+  min-height: 44px !important;
+  padding: 9px 16px !important;
+  font-size: 16px !important;
+}
+body.mobileUx #backButton { margin-top: 10px !important; }
+body.mobileUx #resultScreen .resultPanel p {
+  margin: 7px 0 !important;
+  font-size: clamp(15px, 2.7vh, 18px) !important;
+  line-height: 1.4 !important;
+}
+body.mobileUx #resultScreen .buttonRow { margin-top: 12px !important; gap: 10px !important; }
+
+/* How-to: use the landscape width instead of a long vertical page. */
+body.mobileUx #howToScreen .howToPanel {
+  position: relative !important;
+  width: min(1080px, 97vw) !important;
+  height: calc(100dvh - 14px) !important;
+  max-height: calc(100dvh - 14px) !important;
+  padding: 10px 14px !important;
+  overflow: hidden !important;
+}
+body.mobileUx #howToScreen .howToPanel h2 {
+  margin: 0 0 6px !important;
+  font-size: clamp(24px, 5.8vh, 33px) !important;
+  line-height: 1.05 !important;
+}
+body.mobileUx #howToScreen .howToContent {
+  height: calc(100% - 42px) !important;
+  columns: 3 !important;
+  column-gap: 16px !important;
+  column-rule: 1px solid rgba(255,255,255,.10) !important;
+  overflow: hidden !important;
+  font-size: clamp(11.5px, 2.15vh, 14px) !important;
+  line-height: 1.32 !important;
+}
+body.mobileUx #howToScreen .howToContent h3 {
+  break-after: avoid !important;
+  break-inside: avoid !important;
+  margin: 5px 0 3px !important;
+  padding-bottom: 2px !important;
+  font-size: clamp(14px, 2.8vh, 18px) !important;
+}
+body.mobileUx #howToScreen .howToContent p {
+  break-inside: avoid !important;
+  margin: 2px 0 !important;
+}
+body.mobileUx #howToScreen .howToVisualGrid {
+  column-span: all !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 6px !important;
+  margin: 5px 0 7px !important;
+}
+body.mobileUx #howToScreen .howToCard {
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: 42px 1fr !important;
+  grid-template-rows: auto auto !important;
+  column-gap: 6px !important;
+  padding: 5px !important;
+  text-align: left !important;
+}
+body.mobileUx #howToScreen .howToCard img {
+  grid-row: 1 / 3 !important;
+  width: 40px !important;
+  height: 40px !important;
+  margin: 0 !important;
+  align-self: center !important;
+}
+body.mobileUx #howToScreen .howToCard strong {
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+}
+body.mobileUx #howToScreen .howToCard span {
+  font-size: 10.5px !important;
+  line-height: 1.2 !important;
+}
+body.mobileUx #howToBackButton {
+  position: absolute !important;
+  right: 12px !important;
+  top: 8px !important;
+  z-index: 10 !important;
+  min-width: 96px !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 6px 12px !important;
+  font-size: 14px !important;
+}
+body.mobileUx #counterHelp {
+  break-inside: avoid !important;
+  margin-top: 5px !important;
+  padding-top: 4px !important;
+}
+
+/* Gallery and records keep the whole screen fixed; only their content region scrolls. */
+body.mobileUx #galleryScreen .settingsPanel,
+body.mobileUx #recordsScreen .settingsPanel {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(1080px, 97vw) !important;
+  height: calc(100dvh - 14px) !important;
+  max-height: calc(100dvh - 14px) !important;
+  padding: 10px 14px !important;
+  overflow: hidden !important;
+}
+body.mobileUx #galleryScreen .settingsPanel h2,
+body.mobileUx #recordsScreen .settingsPanel h2 {
+  margin: 0 0 3px !important;
+  font-size: clamp(24px, 5.5vh, 32px) !important;
+}
+body.mobileUx #galleryScreen .screenNote,
+body.mobileUx #recordsScreen .screenNote {
+  margin: 0 110px 5px !important;
+  font-size: 12px !important;
+  line-height: 1.3 !important;
+}
+body.mobileUx #galleryList {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+  gap: 8px !important;
+  margin: 4px 0 0 !important;
+  padding: 2px !important;
+}
+body.mobileUx .galleryCard { padding: 7px !important; border-radius: 10px !important; }
+body.mobileUx .galleryCard img { height: clamp(82px, 20vh, 120px) !important; }
+body.mobileUx .galleryCard h3 { margin: 6px 0 3px !important; font-size: 16px !important; }
+body.mobileUx .galleryCard p { font-size: 11.5px !important; line-height: 1.35 !important; }
+body.mobileUx #galleryBackButton,
+body.mobileUx #recordsBackButton {
+  position: absolute !important;
+  right: 12px !important;
+  top: 8px !important;
+  z-index: 10 !important;
+  min-width: 96px !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 6px 12px !important;
+  font-size: 14px !important;
+}
+body.mobileUx #recordsScreen .recordControls {
+  margin: 2px 0 5px !important;
+  font-size: 13px !important;
+}
+body.mobileUx #recordsScreen .recordControls select { min-height: 34px !important; font-size: 14px !important; }
+body.mobileUx #recordsScreen .recordsLayout {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+body.mobileUx #recordsScreen .recordsList,
+body.mobileUx #recordsScreen .recordDetail {
+  min-height: 0 !important;
+  max-height: none !important;
+  height: 100% !important;
+  padding: 8px !important;
+  border-radius: 10px !important;
+  overflow: auto !important;
+}
+body.mobileUx .recordRow { margin-bottom: 6px !important; padding: 7px 9px !important; }
+body.mobileUx .recordMeta strong,
+body.mobileUx .recordTimeBadge { font-size: 14px !important; }
+body.mobileUx .recordMeta span { font-size: 11px !important; }
+body.mobileUx .recordDetailCard img { max-height: 120px !important; margin-bottom: 5px !important; }
+body.mobileUx .recordDetailCard h3 { margin: 2px 0 5px !important; font-size: 18px !important; }
+body.mobileUx .recordDetailCard p { margin: 3px 0 !important; font-size: 12px !important; line-height: 1.35 !important; }
+
+body.mobileUx #movieStage { width: 100vw !important; height: 100dvh !important; }
+
+/* Portrait gameplay is intentionally blocked: the game is designed for two-thumb landscape control. */
+#rotateNotice {
+  position: absolute;
+  inset: 0;
+  z-index: 5000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 9px;
+  padding: 24px;
+  background: radial-gradient(circle at center, #111827, #000 72%);
+  color: #fff;
+  text-align: center;
+}
+#rotateNotice strong { font-size: 26px; letter-spacing: .08em; }
+#rotateNotice span { font-size: 15px; color: #cbd5e1; }
+body.portraitGame #gameScreen.active #rotateNotice { display: flex; }
+body.portraitGame #gameScreen.active #gameViewportScaler,
+body.portraitGame #gameScreen.active .mobileHudRail,
+body.portraitGame #gameScreen.active #touchControls,
+body.portraitGame #gameScreen.active #touchPauseButton,
+body.portraitGame #gameScreen.active #staminaGauge,
+body.portraitGame #gameScreen.active #messageBox,
+body.portraitGame #gameScreen.active #promptBox,
+body.portraitGame #gameScreen.active #buddhaGauge,
+body.portraitGame #gameScreen.active #ugomeEscapeGauge { visibility: hidden !important; }
+
+@media (max-height: 360px) and (orientation: landscape) {
+  body.mobileUx #titleScreen .titlePanel h1 { font-size: 30px !important; margin-bottom: 7px !important; }
+  body.mobileUx #titleScreen .menuButton { min-height: 40px !important; font-size: 15px !important; }
+  body.mobileUx #titleScreen .audioNotice { font-size: 10.5px !important; }
+  body.mobileUx #howToScreen .howToContent { font-size: 10.5px !important; line-height: 1.22 !important; }
+  body.mobileUx #howToScreen .howToCard span { font-size: 9.5px !important; }
+  body.mobileUx #howToScreen .howToCard img { width: 34px !important; height: 34px !important; }
+}
+/* Keep the playfield coordinate system exactly 800x500; use an outline for the frame. */
+body.mobileUx #gameViewportScaler > #gameViewport,
+body.mobileUx #gameViewport {
+  border: 0 !important;
+  outline: 2px solid rgba(80,94,116,.78) !important;
+  outline-offset: 0 !important;
+}
